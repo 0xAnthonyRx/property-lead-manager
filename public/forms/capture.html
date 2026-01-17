@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Dream Property</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .form-content {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        label .required {
+            color: #e74c3c;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .result h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .result p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .form-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Find Your Dream Property</h1>
+            <p>Fill this quick form and we'll match you with the perfect property</p>
+        </div>
+
+        <div class="form-content">
+            <form id="leadForm">
+                <div class="form-group">
+                    <label>What's your name? <span class="required">*</span></label>
+                    <input type="text" name="customer_name" required placeholder="e.g., John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label>Your phone number <span class="required">*</span></label>
+                    <input type="tel" name="phone" required placeholder="e.g., 08012345678">
+                    <div class="helper-text">We'll use this to contact you about properties</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email address (optional)</label>
+                    <input type="email" name="email" placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label>What's your budget range? <span class="required">*</span></label>
+                    <select name="budget" required>
+                        <option value="">Select your budget...</option>
+                        <option value="Under ₦5 million">Under ₦5 million</option>
+                        <option value="₦5 - 20 million">₦5 - 20 million</option>
+                        <option value="₦20 - 50 million">₦20 - 50 million</option>
+                        <option value="Above ₦50 million">Above ₦50 million</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Where would you like to live? <span class="required">*</span></label>
+                    <input type="text" name="location" required placeholder="e.g., Lekki, Ikoyi, Victoria Island">
+                </div>
+
+                <div class="form-group">
+                    <label>How soon are you looking to buy/rent? <span class="required">*</span></label>
+                    <select name="urgency" required>
+                        <option value="">Select timeline...</option>
+                        <option value="Within 1 month (Urgent!)">Within 1 month (Urgent!)</option>
+                        <option value="1-3 months">1-3 months</option>
+                        <option value="3-6 months">3-6 months</option>
+                        <option value="Just browsing for now">Just browsing for now</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>What's your financing status? <span class="required">*</span></label>
+                    <select name="financing_status" required>
+                        <option value="">Select option...</option>
+                        <option value="Ready to pay (cash/approved loan)">Ready to pay (cash/approved loan)</option>
+                        <option value="Cash buyer (no loan needed)">Cash buyer (no loan needed)</option>
+                        <option value="Working on mortgage/loan approval">Working on mortgage/loan approval</option>
+                        <option value="Need help with financing options">Need help with financing options</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Property type preference <span class="required">*</span></label>
+                    <select name="property_type" required>
+                        <option value="">Select property type...</option>
+                        <option value="Detached house">Detached house</option>
+                        <option value="Semi-detached/Duplex">Semi-detached/Duplex</option>
+                        <option value="Apartment/Flat">Apartment/Flat</option>
+                        <option value="Land only">Land only</option>
+                        <option value="Not sure yet">Not sure yet</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Submit My Information
+                </button>
+            </form>
+
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get agent_id from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const agentId = urlParams.get('agent_id') || 'AG001'; // Default to AG001 for testing
+
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            resultDiv.style.display = 'none';
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            data.agent_id = agentId; // Add agent_id from URL
+            
+            try {
+                const response = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3><span class="emoji"></span>Thank you!</h3>
+                        <p><strong>Your information has been received successfully.</strong></p>
+                        <p>Our agent <strong>${result.agent.name}</strong> will contact you within <strong>2 hours</strong>.</p>
+                        <p>We've found properties that match your criteria. Talk soon!</p>
+                    `;
+                    resultDiv.style.display = 'block';
+                    
+                    // Reset form
+                    e.target.reset();
+                    
+                    // Scroll to result
+                    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3><span class="emoji">❌</span>Oops! Something went wrong</h3>
+                    <p>${error.message}</p>
+                    <p>Please try again or contact us directly.</p>
+                `;
+                resultDiv.style.display = 'block';
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit My Information';
+            }
+        });
+    </script>
+</body>
+</html>
