@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs'); // Import FS to debug
 require('dotenv').config();
 
 const app = express();
@@ -11,8 +12,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- FIX 1: Point correctly to the 'public' folder (go up one level from src) ---
-app.use(express.static(path.join(__dirname, '../public')));
+// --- DEBUGGING BLOCK (Will show in Render Logs) ---
+console.log('Current Working Directory:', process.cwd());
+const publicPath = path.join(process.cwd(), 'public');
+console.log('Looking for public folder at:', publicPath);
+
+if (fs.existsSync(publicPath)) {
+    console.log('✅ Public folder found!');
+    console.log('Contents:', fs.readdirSync(publicPath));
+} else {
+    console.log('❌ Public folder NOT found at this path.');
+}
+// --------------------------------------------------
+
+// FIX: Use process.cwd() to ensure we look from the project root
+app.use(express.static(publicPath));
 
 // Import Supabase client
 const supabase = require('./config/database');
@@ -21,9 +35,14 @@ const supabase = require('./config/database');
 const leadsRoutes = require('./routes/leads');
 const authRoutes = require('./routes/auth');
 
-// --- FIX 2: Serve the index.html instead of the JSON message ---
+// FIX: Serve index.html explicitly using the safe path
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
+    const indexPath = path.join(publicPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(404).send('Error: index.html not found on server.');
+    }
 });
 
 // API Routes
@@ -53,8 +72,6 @@ app.get('/health', async (req, res) => {
     }
 });
 
-// Start server
 app.listen(PORT, () => {
     console.log(` Server running on http://localhost:${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/health`);
 });
