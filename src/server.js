@@ -10,7 +10,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+
+// --- FIX 1: Point correctly to the 'public' folder (go up one level from src) ---
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Import Supabase client
 const supabase = require('./config/database');
@@ -19,13 +21,9 @@ const supabase = require('./config/database');
 const leadsRoutes = require('./routes/leads');
 const authRoutes = require('./routes/auth');
 
-// Routes
+// --- FIX 2: Serve the index.html instead of the JSON message ---
 app.get('/', (req, res) => {
-    res.json({ 
-        message: ' Property Lead Manager API',
-        status: 'running',
-        version: '1.0.0'
-    });
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // API Routes
@@ -35,7 +33,6 @@ app.use('/api/auth', authRoutes);
 // Health check
 app.get('/health', async (req, res) => {
     try {
-        // Test Supabase connection by querying agents table
         const { data, error } = await supabase
             .from('agents')
             .select('count');
@@ -61,9 +58,3 @@ app.listen(PORT, () => {
     console.log(` Server running on http://localhost:${PORT}`);
     console.log(`Health check: http://localhost:${PORT}/health`);
 });
-
-// Import routes (add this line with other imports)
-//const authRoutes = require('./routes/auth');
-
-// API Routes (add this line with other routes)
-//app.use('/api/auth', authRoutes);
